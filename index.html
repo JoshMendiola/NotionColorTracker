@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Emotion Text Analyzer</title>
     <style>
+        /* Previous styles remain the same */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -25,7 +26,7 @@
 
         .widget-container {
             background-color: #2d2d2d;
-            padding: 32px;
+            padding: 24px;
             border-radius: 16px;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
             width: 90%;
@@ -35,27 +36,66 @@
 
         h2 {
             color: #ffffff;
-            font-size: 24px;
-            margin-bottom: 24px;
+            font-size: 20px;
+            margin-bottom: 16px;
             font-weight: 600;
             letter-spacing: 0.5px;
             text-align: center;
         }
 
+        .emotion-indicators {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+            justify-content: center;
+        }
+
+        .emotion-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background-color: #232323;
+            border-radius: 12px;
+            font-size: 13px;
+            border: 1px solid #3d3d3d;
+            transition: all 0.3s ease;
+        }
+
+        .emotion-indicator.has-words {
+            border-color: rgba(255, 255, 255, 0.2);
+            animation: pulse 2s infinite;
+        }
+
+        .color-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .count {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 12px;
+            margin-left: 4px;
+        }
+
         .input-container {
             position: relative;
-            margin-bottom: 24px;
         }
 
         .text-input {
             width: 100%;
-            min-height: 120px;
+            min-height: 100px;
             padding: 16px;
             background-color: #232323;
             border: 1px solid #3d3d3d;
             border-radius: 12px;
             color: #ffffff;
-            font-size: 15px;
+            font-size: 14px;
             resize: vertical;
             transition: all 0.3s ease;
             font-family: inherit;
@@ -67,86 +107,11 @@
             box-shadow: 0 0 0 2px rgba(74, 158, 255, 0.2);
         }
 
-        .emotion-grid {
-            display: grid;
-            gap: 12px;
-            margin-top: 24px;
-        }
-
-        .emotion-card {
-            padding: 16px;
-            border-radius: 12px;
-            color: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 15px;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease;
-            background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
-        }
-
-        .emotion-card:hover {
-            transform: translateX(4px);
-        }
-
-        .emotion-name {
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .color-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            display: inline-block;
-        }
-
-        .emotion-count {
-            background-color: rgba(0, 0, 0, 0.2);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 14px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
         .total-count {
-            margin-top: 24px;
-            padding: 16px;
-            background-color: #232323;
-            border-radius: 12px;
-            color: #ffffff;
-            font-size: 15px;
-            font-weight: 500;
             text-align: center;
-            border: 1px solid #3d3d3d;
-        }
-
-        .instructions {
-            margin-top: 16px;
-            font-size: 14px;
+            font-size: 13px;
             color: #888;
-            text-align: center;
-        }
-
-        .key-wrapper {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 16px;
-            justify-content: center;
-        }
-
-        .color-key {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 4px 8px;
-            background-color: #232323;
-            border-radius: 6px;
-            font-size: 12px;
+            margin-top: 12px;
         }
 
         @keyframes pulse {
@@ -155,8 +120,10 @@
             100% { transform: scale(1); }
         }
 
-        .emotion-card.has-words {
-            animation: pulse 2s infinite;
+        @media (max-width: 600px) {
+            .emotion-indicators {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
     </style>
 </head>
@@ -164,105 +131,117 @@
 <div class="widget-container">
     <h2>Emotion Text Analyzer</h2>
 
-    <div class="key-wrapper">
-        <div class="color-key">
-            <span class="color-dot" style="background-color: #ff5252;"></span>
-            Anger
-        </div>
-        <div class="color-key">
-            <span class="color-dot" style="background-color: #ff9234;"></span>
-            Frustration
-        </div>
-        <div class="color-key">
-            <span class="color-dot" style="background-color: #ffe034;"></span>
-            Embarrassment
-        </div>
-        <div class="color-key">
-            <span class="color-dot" style="background-color: #4caf50;"></span>
-            Joy
-        </div>
-        <div class="color-key">
-            <span class="color-dot" style="background-color: #5c6bc0;"></span>
-            Sad
-        </div>
-        <div class="color-key">
-            <span class="color-dot" style="background-color: #ab47bc;"></span>
-            Shame
-        </div>
-    </div>
+    <div class="emotion-indicators"></div>
 
     <div class="input-container">
             <textarea
                     class="text-input"
-                    placeholder="Paste your Notion text here...&#10;Example: I feel angry but also happy today"
+                    placeholder="Paste your Notion text here...&#10;Example: I feel angry and angry and happy today"
             ></textarea>
     </div>
 
-    <div class="emotion-grid"></div>
     <div class="total-count"></div>
-
-    <p class="instructions">
-        Tip: In Notion, use colors to mark emotions, then paste your text here
-    </p>
 </div>
 
 <script>
     const emotions = [
-        { name: 'Anger', color: '#ff5252', keywords: ['angry', 'mad', 'furious', 'rage'] },
-        { name: 'Frustration', color: '#ff9234', keywords: ['frustrated', 'annoyed', 'irritated'] },
-        { name: 'Embarrassment', color: '#ffe034', keywords: ['embarrassed', 'awkward', 'uncomfortable'] },
-        { name: 'Joy', color: '#4caf50', keywords: ['happy', 'joy', 'excited', 'glad'] },
-        { name: 'Sad', color: '#5c6bc0', keywords: ['sad', 'unhappy', 'depressed', 'down'] },
-        { name: 'Shame', color: '#ab47bc', keywords: ['ashamed', 'guilty', 'regret'] }
+        {
+            name: 'Anger',
+            color: '#ff5252',
+            keywords: ['angry', 'mad', 'furious', 'rage', 'anger'],
+            regex: /\b(angry|mad|furious|rage|anger)\b/gi
+        },
+        {
+            name: 'Frustration',
+            color: '#ff9234',
+            keywords: ['frustrated', 'annoyed', 'irritated', 'frustration'],
+            regex: /\b(frustrated|annoyed|irritated|frustration)\b/gi
+        },
+        {
+            name: 'Embarrassment',
+            color: '#ffe034',
+            keywords: ['embarrassed', 'awkward', 'uncomfortable', 'embarrassment'],
+            regex: /\b(embarrassed|awkward|uncomfortable|embarrassment)\b/gi
+        },
+        {
+            name: 'Joy',
+            color: '#4caf50',
+            keywords: ['happy', 'joy', 'excited', 'glad', 'joyful', 'delighted'],
+            regex: /\b(happy|joy|excited|glad|joyful|delighted)\b/gi
+        },
+        {
+            name: 'Sad',
+            color: '#5c6bc0',
+            keywords: ['sad', 'unhappy', 'depressed', 'down', 'sadness'],
+            regex: /\b(sad|unhappy|depressed|down|sadness)\b/gi
+        },
+        {
+            name: 'Shame',
+            color: '#ab47bc',
+            keywords: ['ashamed', 'guilty', 'regret', 'shame'],
+            regex: /\b(ashamed|guilty|regret|shame)\b/gi
+        }
     ];
 
     function countEmotionalWords(text) {
         const counts = {};
+
         emotions.forEach(emotion => {
+            // Reset count for this emotion
             counts[emotion.name] = 0;
-            emotion.keywords.forEach(keyword => {
-                const regex = new RegExp(`\\b${keyword}\\b`, 'gi');
-                const matches = text.match(regex);
-                if (matches) {
-                    counts[emotion.name] += matches.length;
-                }
-            });
+
+            // Find all matches using the regex
+            const matches = text.match(emotion.regex);
+
+            // If matches found, add their length to the count
+            if (matches) {
+                counts[emotion.name] = matches.length;
+            }
         });
+
         return counts;
     }
 
     function updateDisplay(counts) {
-        const emotionGrid = document.querySelector('.emotion-grid');
+        const indicatorsContainer = document.querySelector('.emotion-indicators');
         const totalCountDiv = document.querySelector('.total-count');
         let totalWords = 0;
-        emotionGrid.innerHTML = '';
+        indicatorsContainer.innerHTML = '';
 
         emotions.forEach(emotion => {
             const count = counts[emotion.name];
             totalWords += count;
 
-            const card = document.createElement('div');
-            card.className = `emotion-card ${count > 0 ? 'has-words' : ''}`;
-            card.style.borderLeft = `4px solid ${emotion.color}`;
-            card.innerHTML = `
-                    <span class="emotion-name">
-                        <span class="color-dot" style="background-color: ${emotion.color};"></span>
-                        ${emotion.name}
-                    </span>
-                    <span class="emotion-count">${count} word${count === 1 ? '' : 's'}</span>
+            const indicator = document.createElement('div');
+            indicator.className = `emotion-indicator ${count > 0 ? 'has-words' : ''}`;
+            indicator.innerHTML = `
+                    <span class="color-dot" style="background-color: ${emotion.color};"></span>
+                    <span>${emotion.name}</span>
+                    <span class="count">${count}</span>
                 `;
-            emotionGrid.appendChild(card);
+            indicatorsContainer.appendChild(indicator);
         });
 
-        totalCountDiv.textContent = `Total emotional expressions: ${totalWords} words`;
+        totalCountDiv.textContent = `Total: ${totalWords} emotional expressions`;
     }
 
     const textInput = document.querySelector('.text-input');
+    let debounceTimeout;
+
     textInput.addEventListener('input', (e) => {
-        const text = e.target.value;
-        const counts = countEmotionalWords(text);
-        updateDisplay(counts);
+        // Clear previous timeout
+        clearTimeout(debounceTimeout);
+
+        // Set new timeout
+        debounceTimeout = setTimeout(() => {
+            const text = e.target.value;
+            const counts = countEmotionalWords(text);
+            updateDisplay(counts);
+        }, 300); // 300ms delay
     });
+
+    // Initialize with empty counts
+    updateDisplay(countEmotionalWords(''));
 </script>
 </body>
 </html>
