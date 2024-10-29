@@ -123,38 +123,74 @@
         {
             name: 'Anger',
             color: '#ff5252',
-            keywords: ['angry', 'mad', 'furious', 'rage', 'anger'],
-            regex: /\b(angry|mad|furious|rage|anger)\b/gi
+            keywords: [
+                'angry', 'angered', 'anger', 'mad', 'furious', 'rage',
+                'upset', 'hatred', 'hate', 'at odds', 'frustrating',
+                'angers', 'angering', 'wasteful', 'impulses', 'resent',
+                'resentful', 'bitter', 'outraged'
+            ],
+            regex: /\b(angry|angered|anger|mad|furious|rage|upset|hatred|hate|at odds|frustrating|angers|angering|wasteful|impulses|resent|resentful|bitter|outraged)\b/gi
         },
         {
             name: 'Frustration',
             color: '#ff9234',
-            keywords: ['frustrated', 'annoyed', 'irritated', 'frustration'],
-            regex: /\b(frustrated|annoyed|irritated|frustration)\b/gi
+            keywords: [
+                'frustrated', 'annoyed', 'irritated', 'frustration',
+                'struggle', 'struggling', 'odds', 'difficult',
+                'overcome', 'overcoming', 'cannot', "can't",
+                'hindered', 'blocked', 'limited', 'restricted',
+                'constrained', 'confined'
+            ],
+            regex: /\b(frustrated|annoyed|irritated|frustration|struggle|struggling|odds|difficult|overcome|overcoming|cannot|can't|hindered|blocked|limited|restricted|constrained|confined)\b/gi
         },
         {
             name: 'Embarrassment',
             color: '#ffe034',
-            keywords: ['embarrassed', 'awkward', 'uncomfortable', 'embarrassment'],
-            regex: /\b(embarrassed|awkward|uncomfortable|embarrassment)\b/gi
+            keywords: [
+                'embarrassed', 'awkward', 'uncomfortable',
+                'embarrassing', 'emasculating', 'emasculated',
+                'dishonestly', 'dishonest', 'shame', 'ashamed',
+                'humiliated', 'humbling', 'degrading', 'guilty',
+                'regret', 'relegated', 'fault', 'failing', 'failed',
+                'inadequate', 'insufficient'
+            ],
+            regex: /\b(embarrassed|awkward|uncomfortable|embarrassing|emasculating|emasculated|dishonestly|dishonest|shame|ashamed|humiliated|humbling|degrading|guilty|regret|relegated|fault|failing|failed|inadequate|insufficient)\b/gi
         },
         {
             name: 'Joy',
             color: '#4caf50',
-            keywords: ['happy', 'joy', 'excited', 'glad', 'joyful', 'delighted'],
-            regex: /\b(happy|joy|excited|glad|joyful|delighted)\b/gi
+            keywords: [
+                'happy', 'joy', 'excited', 'glad', 'joyful',
+                'delighted', 'funny', 'nice', 'benefit',
+                'beneficial', 'hope', 'hopefully', 'satisfied',
+                'pleased', 'content', 'grateful'
+            ],
+            regex: /\b(happy|joy|excited|glad|joyful|delighted|funny|nice|benefit|beneficial|hope|hopefully|satisfied|pleased|content|grateful)\b/gi
         },
         {
             name: 'Sad',
             color: '#5c6bc0',
-            keywords: ['sad', 'unhappy', 'depressed', 'down', 'sadness'],
-            regex: /\b(sad|unhappy|depressed|down|sadness)\b/gi
+            keywords: [
+                'sad', 'unhappy', 'depressed', 'down',
+                'disheartened', 'confused', 'lost',
+                'struggling', 'hurt', 'pain', 'sadness',
+                'lonely', 'alone', 'empty', 'hollow',
+                'meaningless', 'discouraged'
+            ],
+            regex: /\b(sad|unhappy|depressed|down|disheartened|confused|lost|struggling|hurt|pain|sadness|lonely|alone|empty|hollow|meaningless|discouraged)\b/gi
         },
         {
-            name: 'Shame',
+            name: 'Pride/Ego',
             color: '#ab47bc',
-            keywords: ['ashamed', 'guilty', 'regret', 'shame'],
-            regex: /\b(ashamed|guilty|regret|shame)\b/gi
+            keywords: [
+                'pride', 'control', 'important', 'valuable',
+                'worth', 'worthless', 'superiority', 'inferior',
+                'dignity', 'reputation', 'status', 'respect',
+                'disrespect', 'power', 'powerless', 'helpless',
+                'dominant', 'submissive', 'authority', 'independence',
+                'dependent', 'self-image', 'ego', 'proud'
+            ],
+            regex: /\b(pride|control|important|valuable|worth|worthless|superiority|inferior|dignity|reputation|status|respect|disrespect|power|powerless|helpless|dominant|submissive|authority|independence|dependent|self-image|ego|proud)\b/gi
         }
     ];
 
