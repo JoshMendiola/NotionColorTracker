@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emotion Word Counter</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #1a1a1a;
+            color: #ffffff;
+        }
+
+        .widget-container {
+            background-color: #2d2d2d;
+            padding: 32px;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            min-width: 300px;
+            max-width: 400px;
+            border: 1px solid #3d3d3d;
+        }
+
+        h2 {
+            color: #ffffff;
+            font-size: 24px;
+            margin-bottom: 24px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .count-button {
+            background-color: #4a9eff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 24px;
+            font-weight: 500;
+        }
+
+        .count-button:hover {
+            background-color: #5ca8ff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(74, 158, 255, 0.3);
+        }
+
+        .count-button:active {
+            transform: translateY(0);
+        }
+
+        .emotion-grid {
+            display: grid;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .emotion-card {
+            padding: 16px;
+            border-radius: 12px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 15px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
+        }
+
+        .emotion-card:hover {
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .emotion-name {
+            font-weight: 500;
+        }
+
+        .emotion-count {
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .total-count {
+            margin-top: 24px;
+            padding: 16px;
+            background-color: #232323;
+            border-radius: 12px;
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 500;
+            border: 1px solid #3d3d3d;
+        }
+
+        @keyframes glow {
+            0% { box-shadow: 0 0 5px rgba(74, 158, 255, 0.2); }
+            50% { box-shadow: 0 0 15px rgba(74, 158, 255, 0.4); }
+            100% { box-shadow: 0 0 5px rgba(74, 158, 255, 0.2); }
+        }
+
+        .widget-container {
+            animation: glow 3s infinite;
+        }
+    </style>
+</head>
+<body>
+<div class="widget-container">
+    <h2>Emotion Tracker</h2>
+    <button class="count-button">Analyze Emotions</button>
+    <div class="emotion-grid"></div>
+    <div class="total-count"></div>
+</div>
+
+<script>
+    const emotions = [
+        { name: 'Anger', color: '#ff5252' },
+        { name: 'Frustration', color: '#ff9234' },
+        { name: 'Embarrassment', color: '#ffe034' },
+        { name: 'Joy', color: '#4caf50' },
+        { name: 'Sad', color: '#5c6bc0' },
+        { name: 'Shame', color: '#ab47bc' }
+    ];
+
+    function rgbToHex(rgb) {
+        const values = rgb.substring(4, rgb.length - 1).split(',');
+        const r = parseInt(values[0].trim());
+        const g = parseInt(values[1].trim());
+        const b = parseInt(values[2].trim());
+        return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+    }
+
+    function countColoredWords(color) {
+        let wordCount = 0;
+        const textElements = document.querySelectorAll('[style*="color"]');
+
+        textElements.forEach(element => {
+            const computedStyle = window.getComputedStyle(element);
+            const elementColor = rgbToHex(computedStyle.color).toLowerCase();
+
+            if (elementColor === color.toLowerCase()) {
+                const words = element.textContent.trim().split(/\s+/);
+                wordCount += words.length;
+            }
+        });
+
+        return wordCount;
+    }
+
+    function updateEmotionCounts() {
+        const emotionGrid = document.querySelector('.emotion-grid');
+        const totalCountDiv = document.querySelector('.total-count');
+        let totalWords = 0;
+        emotionGrid.innerHTML = '';
+
+        emotions.forEach(emotion => {
+            const count = countColoredWords(emotion.color);
+            totalWords += count;
+
+            const card = document.createElement('div');
+            card.className = 'emotion-card';
+            card.style.backgroundColor = emotion.color + '33'; // Adding transparency
+            card.style.borderLeft = `4px solid ${emotion.color}`;
+            card.innerHTML = `
+                    <span class="emotion-name">${emotion.name}</span>
+                    <span class="emotion-count">${count} word${count === 1 ? '' : 's'}</span>
+                `;
+            emotionGrid.appendChild(card);
+        });
+
+        totalCountDiv.textContent = `Total emotional expressions: ${totalWords} words`;
+    }
+
+    document.querySelector('.count-button').addEventListener('click', updateEmotionCounts);
+</script>
+</body>
+</html>
