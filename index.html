@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Emotion Text Analyzer</title>
     <style>
-        /* Previous styles remain the same */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -51,6 +50,22 @@
             justify-content: center;
         }
 
+        .emotion-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background-color: #232323;
+            border-radius: 12px;
+            font-size: 13px;
+            border: 1px solid #3d3d3d;
+            transition: all 0.3s ease;
+        }
+
+        .emotion-indicator.has-words {
+            border-color: rgba(255, 255, 255, 0.2);
+            animation: pulse 2s infinite;
+        }
 
         .color-dot {
             width: 8px;
@@ -91,6 +106,23 @@
             box-shadow: 0 0 0 2px rgba(74, 158, 255, 0.2);
         }
 
+        .total-count {
+            text-align: center;
+            font-size: 13px;
+            color: #888;
+            margin-top: 12px;
+        }
+
+        .debug-output {
+            margin-top: 20px;
+            padding: 16px;
+            background-color: #232323;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #aaa;
+            display: none;
+        }
+
         @keyframes pulse {
             0% { transform: scale(1); }
             50% { transform: scale(1.02); }
@@ -101,21 +133,25 @@
             .emotion-indicators {
                 grid-template-columns: repeat(2, 1fr);
             }
+
+            .widget-container {
+                margin: 16px;
+            }
         }
     </style>
 </head>
 <body>
 <div class="widget-container">
     <h2>Emotion Text Analyzer</h2>
-
     <div class="emotion-indicators"></div>
-
     <div class="input-container">
             <textarea
                     class="text-input"
-                    placeholder="Paste your Notion text here...&#10;Example: I feel angry and angry and happy today"
+                    placeholder="Paste your Notion text here..."
             ></textarea>
     </div>
+    <div class="total-count"></div>
+    <div class="debug-output"></div>
 </div>
 
 <script>
@@ -123,92 +159,142 @@
         {
             name: 'Anger',
             color: '#ff5252',
-            keywords: [
-                'angry', 'angered', 'anger', 'mad', 'furious', 'rage',
-                'upset', 'hatred', 'hate', 'at odds', 'frustrating',
-                'angers', 'angering', 'wasteful', 'impulses', 'resent',
-                'resentful', 'bitter', 'outraged'
-            ],
-            regex: /\b(angry|angered|anger|mad|furious|rage|upset|hatred|hate|at odds|frustrating|angers|angering|wasteful|impulses|resent|resentful|bitter|outraged)\b/gi
+            patterns: [
+                /\b(?:very\s+)?upset\b/gi,
+                /\b(?:am|is|feel|feels|felt)\s+angry\b/gi,
+                /\banger(?:ed|s|ing)?\b/gi,
+                /\bmad\b/gi,
+                /\bfurious\b/gi,
+                /\brage\b/gi,
+                /\bhatred\b/gi,
+                /\bhate\b/gi,
+                /\bat odds\b/gi,
+                /\bwasteful\b/gi,
+                /\bimpulses\b/gi,
+                /\bfrustrating\b/gi
+            ]
         },
         {
             name: 'Frustration',
             color: '#ff9234',
-            keywords: [
-                'frustrated', 'annoyed', 'irritated', 'frustration',
-                'struggle', 'struggling', 'odds', 'difficult',
-                'overcome', 'overcoming', 'cannot', "can't",
-                'hindered', 'blocked', 'limited', 'restricted',
-                'constrained', 'confined'
-            ],
-            regex: /\b(frustrated|annoyed|irritated|frustration|struggle|struggling|odds|difficult|overcome|overcoming|cannot|can't|hindered|blocked|limited|restricted|constrained|confined)\b/gi
+            patterns: [
+                /\bstruggl(?:e|es|ed|ing)\b/gi,
+                /\bcannot\b/gi,
+                /\bcan't\b/gi,
+                /\bovercom(?:e|es|ing)\b/gi,
+                /\bdifficult\b/gi,
+                /\blimit(?:ed|ing|s)?\b/gi,
+                /\brestrict(?:ed|ing|s)?\b/gi,
+                /\bconfin(?:ed|ing|es)?\b/gi,
+                /\bblock(?:ed|ing|s)?\b/gi,
+                /\bfrustrat(?:ed|ing|ion)\b/gi
+            ]
         },
         {
             name: 'Embarrassment',
             color: '#ffe034',
-            keywords: [
-                'embarrassed', 'awkward', 'uncomfortable',
-                'embarrassing', 'emasculating', 'emasculated',
-                'dishonestly', 'dishonest', 'shame', 'ashamed',
-                'humiliated', 'humbling', 'degrading', 'guilty',
-                'regret', 'relegated', 'fault', 'failing', 'failed',
-                'inadequate', 'insufficient'
-            ],
-            regex: /\b(embarrassed|awkward|uncomfortable|embarrassing|emasculating|emasculated|dishonestly|dishonest|shame|ashamed|humiliated|humbling|degrading|guilty|regret|relegated|fault|failing|failed|inadequate|insufficient)\b/gi
+            patterns: [
+                /\bembarrass(?:ed|ing|ment)\b/gi,
+                /\bawkward\b/gi,
+                /\buncomfortable\b/gi,
+                /\bemasculat(?:ed|ing)\b/gi,
+                /\bdishonest(?:ly)?\b/gi,
+                /\bshame(?:d|ful)?\b/gi,
+                /\bashamed\b/gi,
+                /\bhumiliat(?:ed|ing)\b/gi,
+                /\bdegrad(?:ed|ing)\b/gi,
+                /\brelegate?(?:ed|ing)\b/gi
+            ]
         },
         {
             name: 'Joy',
             color: '#4caf50',
-            keywords: [
-                'happy', 'joy', 'excited', 'glad', 'joyful',
-                'delighted', 'funny', 'nice', 'benefit',
-                'beneficial', 'hope', 'hopefully', 'satisfied',
-                'pleased', 'content', 'grateful'
-            ],
-            regex: /\b(happy|joy|excited|glad|joyful|delighted|funny|nice|benefit|beneficial|hope|hopefully|satisfied|pleased|content|grateful)\b/gi
+            patterns: [
+                /\bhappy\b/gi,
+                /\bjoy(?:ful)?\b/gi,
+                /\bexcit(?:ed|ing)\b/gi,
+                /\bglad\b/gi,
+                /\bfunny\b/gi,
+                /\bnice\b/gi,
+                /\bbenefit(?:s|ial)?\b/gi,
+                /\bhope(?:ful|fully)?\b/gi,
+                /\bpleas(?:ed|ant)\b/gi
+            ]
         },
         {
             name: 'Sad',
             color: '#5c6bc0',
-            keywords: [
-                'sad', 'unhappy', 'depressed', 'down',
-                'disheartened', 'confused', 'lost',
-                'struggling', 'hurt', 'pain', 'sadness',
-                'lonely', 'alone', 'empty', 'hollow',
-                'meaningless', 'discouraged'
-            ],
-            regex: /\b(sad|unhappy|depressed|down|disheartened|confused|lost|struggling|hurt|pain|sadness|lonely|alone|empty|hollow|meaningless|discouraged)\b/gi
+            patterns: [
+                /\bsad(?:ness)?\b/gi,
+                /\bunhappy\b/gi,
+                /\bdepress(?:ed|ing)\b/gi,
+                /\bdown\b/gi,
+                /\bdishearten(?:ed|ing)\b/gi,
+                /\bconfus(?:ed|ing)\b/gi,
+                /\blost\b/gi,
+                /\bhurt(?:s|ing)?\b/gi,
+                /\bpain(?:ful)?\b/gi,
+                /\bstrugg?l(?:e|es|ed|ing)\b/gi
+            ]
         },
         {
             name: 'Pride/Ego',
             color: '#ab47bc',
-            keywords: [
-                'pride', 'control', 'important', 'valuable',
-                'worth', 'worthless', 'superiority', 'inferior',
-                'dignity', 'reputation', 'status', 'respect',
-                'disrespect', 'power', 'powerless', 'helpless',
-                'dominant', 'submissive', 'authority', 'independence',
-                'dependent', 'self-image', 'ego', 'proud'
-            ],
-            regex: /\b(pride|control|important|valuable|worth|worthless|superiority|inferior|dignity|reputation|status|respect|disrespect|power|powerless|helpless|dominant|submissive|authority|independence|dependent|self-image|ego|proud)\b/gi
+            patterns: [
+                /\bpride\b/gi,
+                /\bcontrol\b/gi,
+                /\bimportant\b/gi,
+                /\bvaluable\b/gi,
+                /\bworth(?:less)?\b/gi,
+                /\b(?:in)?superior(?:ity)?\b/gi,
+                /\binferior\b/gi,
+                /\bdignity\b/gi,
+                /\breputation\b/gi,
+                /\bstatus\b/gi,
+                /\b(?:dis)?respect\b/gi,
+                /\bpower(?:less)?\b/gi,
+                /\bhelpless\b/gi,
+                /\bdesire\s+control\b/gi
+            ]
         }
     ];
 
+    function findAllMatches(text, pattern) {
+        let matches = text.match(pattern) || [];
+        return {
+            count: matches.length,
+            matches: matches
+        };
+    }
+
     function countEmotionalWords(text) {
         const counts = {};
+        const debugInfo = {};
 
         emotions.forEach(emotion => {
-            // Reset count for this emotion
             counts[emotion.name] = 0;
+            debugInfo[emotion.name] = [];
 
-            // Find all matches using the regex
-            const matches = text.match(emotion.regex);
-
-            // If matches found, add their length to the count
-            if (matches) {
-                counts[emotion.name] = matches.length;
-            }
+            emotion.patterns.forEach(pattern => {
+                const {count, matches} = findAllMatches(text, pattern);
+                if (count > 0) {
+                    counts[emotion.name] += count;
+                    debugInfo[emotion.name].push(`${matches.join(', ')}: ${count}`);
+                }
+            });
         });
+
+        const debugOutput = document.querySelector('.debug-output');
+        debugOutput.innerHTML = Object.entries(debugInfo)
+            .map(([emotion, matches]) => {
+                if (matches.length > 0) {
+                    return `<strong>${emotion}</strong>:<br>` +
+                        matches.map(match => `- ${match}`).join('<br>');
+                }
+                return null;
+            })
+            .filter(Boolean)
+            .join('<br><br>');
 
         return counts;
     }
@@ -240,15 +326,19 @@
     let debounceTimeout;
 
     textInput.addEventListener('input', (e) => {
-        // Clear previous timeout
         clearTimeout(debounceTimeout);
-
-        // Set new timeout
         debounceTimeout = setTimeout(() => {
             const text = e.target.value;
             const counts = countEmotionalWords(text);
             updateDisplay(counts);
-        }, 300); // 300ms delay
+        }, 300);
+    });
+
+    document.addEventListener('keypress', (e) => {
+        if (e.key === 'd') {
+            const debugOutput = document.querySelector('.debug-output');
+            debugOutput.style.display = debugOutput.style.display === 'none' ? 'block' : 'none';
+        }
     });
 
     // Initialize with empty counts
